@@ -10,12 +10,12 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
   }
 }
-
+#IAM ROLE FOR EKS CLUSTER
 resource "aws_iam_role" "example" {
-  name               = "eks-cluster-cloud"
+  name               = "eks-cluster-cloud-new"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
-
+# Attach AmazonEKSClusterPolicy to the EKS Cluster Role
 resource "aws_iam_role_policy_attachment" "example-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.example.name
@@ -47,9 +47,9 @@ resource "aws_eks_cluster" "example" {
     aws_iam_role_policy_attachment.example-AmazonEKSClusterPolicy,
   ]
 }
-
+# IAM Role for EKS Node Group
 resource "aws_iam_role" "example1" {
-  name = "eks-node-group-cloud"
+  name = "eks-node-group-cloud-new"
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -62,7 +62,7 @@ resource "aws_iam_role" "example1" {
     Version = "2012-10-17"
   })
 }
-
+# Attach Policies to EKS Node Group Role
 resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.example1.name
